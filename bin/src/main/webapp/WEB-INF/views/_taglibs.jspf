@@ -1,0 +1,44 @@
+<%--
+In JSP 2.1, setting "trimDirectiveWhitespaces" page directive to true
+eliminates the extra white space from page/tag directives. For example, a
+carriage return after a "taglib" directive would be included in the response
+output as an extra line. Setting "trimDirectiveWhitespace" to true will remove
+this undesired extra line from the response output.
+
+Setting "isErrorPage" page directive to true circumvents JSP 2.3 requirement
+that JSPs only permit GET, POST, and HEAD.
+--%>
+<%@ page
+	language="java"
+	isELIgnored="false"
+	isErrorPage="true"
+	session="false"
+	trimDirectiveWhitespaces="true"
+	pageEncoding="UTF-8"
+%>
+<%-- JSTL --%>
+<%@ taglib prefix="c"         uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt"       uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"        uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="sql"       uri="http://java.sun.com/jsp/jstl/sql" %>
+<%-- Spring Tag Libraries --%>
+<%@ taglib prefix="form"      uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="security"  uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring"    uri="http://www.springframework.org/tags" %>
+<%-- Apache Tiles Tag Libraries --%>
+<%@ taglib prefix="tiles"     uri="http://tiles.apache.org/tags-tiles" %>
+<%@ taglib prefix="tilesx"    uri="http://tiles.apache.org/tags-tiles-extras" %>
+<%-- SiteMesh Tag Libraries
+<%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator" %>
+<%@ taglib prefix="page"      uri="http://www.opensymphony.com/sitemesh/page" %>
+--%>
+<%-- Local JSP Tag Files (/WEB-INF/tags) --%>
+<%@ taglib prefix="tags"     tagdir="/WEB-INF/tags" %>
+<%-- Common page variables (if any)
+
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="datePattern"><fmt:message key="format.date"/></c:set>
+<c:set var="dateTimePattern"><fmt:message key="format.dateTime"/></c:set>
+<c:set var="timePattern"><fmt:message key="format.time"/></c:set>
+
+--%>
