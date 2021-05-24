@@ -67,13 +67,14 @@ public class MovieScreeningController {
 	}
 
 	@PostMapping(value = "/reserveSeat/{movieScreeningId}")
-	public String reserveASeat(@RequestParam("seatNumbers") String[] seatNumbers, @PathVariable Long movieScreeningId, Model model) {
-
+	public String reserveASeat(@RequestParam("seatNumbers") String seatNumbers, @PathVariable Long movieScreeningId, Model model) {
+		Collection<Seat> seats = new HashSet<>();
 		try {
 			MovieScreening movieScreening = movieScreeningService.findByMovieScreeningId(movieScreeningId);
-			Collection<Seat> seats = parseSeatNumbers(seatNumbers, movieScreeningId);
-			for(Seat seat: seats) {
+			for(String seatNumber: seatNumbers.split(", ")) {
+				Seat seat = parseSeatNumber(seatNumber, movieScreeningId);
 				movieScreeningService.reserveSeatByMovieScreeningId(seat, movieScreeningId);
+				seats.add(seat);
 			}
 			model.addAttribute("movieScreening", movieScreening);
 			model.addAttribute("reservedSeats", seats);
@@ -88,23 +89,21 @@ public class MovieScreeningController {
 		
 	}
 	
-	private Collection<Seat> parseSeatNumbers(String[] seatNumbers, Long movieScreeningId) {
-		HashSet<Seat> seats = new HashSet<>();
-		for (String seatNumber : seatNumbers) {
-			String regex = "((?<=[a-zA-Z])(?=[0-9]))|((?<=[0-9])(?=[a-zA-Z]))";
-			String[] split = seatNumber.split(regex);
-			seats.add(movieScreeningService.findSeatByRowAndColumnAndMovieScreeningId(split[0], Integer.parseInt(split[1]), movieScreeningId));
-		}
-		return seats;
+	private Seat parseSeatNumber(String seatNumber, Long movieScreeningId) {
+		String regex = "((?<=[a-zA-Z])(?=[0-9]))|((?<=[0-9])(?=[a-zA-Z]))";
+		String[] split = seatNumber.split(regex);
+		return (movieScreeningService.findSeatByRowAndColumnAndMovieScreeningId(split[0], Integer.parseInt(split[1]), movieScreeningId));
 	}
 
-	/*
+	
 	@GetMapping(value="/confirmAndReserve/{movieScreeningId}")
-	public String confirmAndReserveSeat(@RequestParam ("seatNumbers") String[] seatNumbers, @PathVariable Long movieScreeningId, Model model) {
+	public String confirmAndReserveSeat(@RequestParam ("seatNumbers") String seatNumbers, @PathVariable Long movieScreeningId, Model model) {
+		Collection<Seat> seats = new HashSet<>();
 		try {
-			Collection<Seat> seats = parseSeatNumbers(seatNumbers, movieScreeningId);
-			for(Seat seat: seats) {
+			for(String seatNumber: seatNumbers.split(", ")) {
+				Seat seat = parseSeatNumber(seatNumber, movieScreeningId);
 				movieScreeningService.reserveSeatByMovieScreeningId(seat, movieScreeningId);
+				seats.add(seat);
 			}
 			System.out.println("Successful reservation of seats.");
 			return "booking/confirmation";
@@ -114,6 +113,6 @@ public class MovieScreeningController {
 			model.addAttribute("errorMessage", e.getMessage());
 			return showMovieScreenings(model);
 		}
-	}*/
+	}
 	
 }
