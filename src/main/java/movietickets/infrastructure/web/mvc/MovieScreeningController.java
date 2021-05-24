@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,6 +69,7 @@ public class MovieScreeningController {
 		return model;
 	}
 
+	@PreAuthorize("hasRole('SERVICE_REP')")
 	@RequestMapping(value = "/reserveSeat/{id}", method = RequestMethod.GET)
 	public String showSeatLayout(@PathVariable Long id, Model model) {
 		System.out.println("Movie Screening id: " + id);
@@ -80,6 +82,7 @@ public class MovieScreeningController {
 		return "/seat/seat";
 	}
 
+	@PreAuthorize("hasRole('SERVICE_REP')")
 	@RequestMapping(value = "/reserveSeat/{id}", method = RequestMethod.POST)
 	public String reserveASeat(@RequestParam("seat") String[] seatNumbers, @PathVariable Long id, Model model) {
 
@@ -115,6 +118,7 @@ public class MovieScreeningController {
 
  	}
 	
+	@PreAuthorize("hasRole('SERVICE_REP')")
 	@RequestMapping(value="/confirmAndReserve/{screeningId}")
 	public String confirmAndReserveSeat(@RequestParam ("seatNumbers") String seatNumbers, @PathVariable Long screeningId, Model model) {
 		try {
@@ -138,6 +142,7 @@ public class MovieScreeningController {
 		}
 	}
 	
+	@PreAuthorize("hasRole('SYSTEM_AD')")
 	@RequestMapping(value="/admin")
 	public String adminAccess(Model model) {
 		List<Movie> movieList = movieScreeningService.findMovieByScheduledToday();
@@ -145,11 +150,13 @@ public class MovieScreeningController {
 		return "admin/admin";
 	}
 	
+	@PreAuthorize("hasRole('SYSTEM_AD')")
 	@RequestMapping(value="/admin/newMovieNewScreening")
 	public String addNewMovieAndNewMovieScreening() {
 		return "admin/newMovieAndNewMovieScreening";
 	}
 	
+	@PreAuthorize("hasRole('SYSTEM_AD')")
 	@RequestMapping(value="/admin/newMovieNewScreening", method = RequestMethod.POST)
 	public String addNewMovieAndNewMovieScreening(@RequestParam String title, 
 													@RequestParam String summary, 
