@@ -25,6 +25,12 @@ public class Cinema {
 		this.maxColumn = maxColumn;
 	}
 	
+	public Cinema(Long id) {
+		this.id = id;
+		this.maxRow = "S";
+		this.maxColumn = 20;
+	}
+	
 	public Long getId() {
 		return id;
 	}
