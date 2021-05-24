@@ -25,6 +25,8 @@ import movietickets.domain.ReservedSeat;
 import movietickets.domain.ReservedSeatService;
 import movietickets.domain.ScreeningScheduleOverlapException;
 import movietickets.domain.SeatAlreadyReservedException;
+import movietickets.domain.Ticket;
+import movietickets.domain.TicketService;
 
 @Controller
 public class MovieScreeningController {
@@ -40,6 +42,9 @@ public class MovieScreeningController {
 	
 	@Autowired
 	private CinemaService cinemaService;
+	
+	@Autowired
+	private TicketService ticketService;
 	
 	private static Long movieId = 5L;
 	private static Long movieScreeningId = 8L;
@@ -119,7 +124,7 @@ public class MovieScreeningController {
 	public String confirmAndReserveSeat(@RequestParam ("seatNumbers") String seatNumbers, @PathVariable Long screeningId, Model model) {
 		try {
 			String[] seatNums = seatNumbers.substring(1, seatNumbers.length() - 1).split(", ");
-			isSeatAvailable(seatNums);
+			//isSeatAvailable(seatNums);
 			Long id = 22L;
 			for(String seat: seatNums) {
 				MovieScreening movieScreening = new MovieScreening(screeningId);
@@ -127,6 +132,9 @@ public class MovieScreeningController {
 				int column = Integer.parseInt(seat.substring(1));
 				ReservedSeat reservedSeat = new ReservedSeat(id++, movieScreening, row, column);
 				reservedSeatService.insertReserveSeat(reservedSeat);
+				
+				Ticket ticket = new Ticket(movieScreening, row, column);
+				ticketService.insertTicket(ticket);
 			}
 			System.out.println("Successful reservation of seats.");
 			
