@@ -1,5 +1,7 @@
 package movietickets.infrastructure.web.mvc;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -13,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import movietickets.domain.Cinema;
+import movietickets.domain.CinemaService;
 import movietickets.domain.Movie;
 import movietickets.domain.MovieScreening;
 import movietickets.domain.MovieScreeningService;
 import movietickets.domain.MovieService;
 import movietickets.domain.ReservedSeat;
 import movietickets.domain.ReservedSeatService;
+import movietickets.domain.ScreeningScheduleOverlapException;
 import movietickets.domain.SeatAlreadyReservedException;
 
 @Controller
@@ -32,6 +37,12 @@ public class MovieScreeningController {
 
 	@Autowired
 	private ReservedSeatService reservedSeatService;
+	
+	@Autowired
+	private CinemaService cinemaService;
+	
+	private static Long movieId = 5L;
+	private static Long movieScreeningId = 8L;
 
 	/*
 	 * @RequestMapping("/screenings") public List<MovieScreening>
@@ -125,5 +136,45 @@ public class MovieScreeningController {
 			model.addAttribute("errorMessage", e.getMessage());
 			return "booking/confirmation";
 		}
+	}
+	
+	@RequestMapping(value="/admin")
+	public String adminAccess(Model model) {
+		List<Movie> movieList = movieScreeningService.findMovieByScheduledToday();
+		model.addAttribute("movieList", movieList);
+		return "admin/admin";
+	}
+	
+	@RequestMapping(value="/admin/newMovieNewScreening")
+	public String addNewMovieAndNewMovieScreening() {
+		return "admin/newMovieAndNewMovieScreening";
+	}
+	
+	@RequestMapping(value="/admin/newMovieNewScreening", method = RequestMethod.POST)
+	public String addNewMovieAndNewMovieScreening(@RequestParam String title, 
+													@RequestParam String summary, 
+													@RequestParam String directors,
+													@RequestParam String actors,
+													@RequestParam String runningTime,
+													@RequestParam String posterLink,
+													@RequestParam String trailerLink,
+													@RequestParam String schedule,
+													@RequestParam String cinema, Model model) {
+		
+		System.out.println("Movie Screening Schedule is: " + schedule);
+		System.out.println("Cinema number is: " + cinema);
+		
+		try {
+			Movie movie = new Movie(movieId++, title, summary, directors, actors, Integer.parseInt(runningTime), posterLink, trailerLink);
+			LocalDate date = LocalDate.parse(schedule.split("T")[0]);
+			LocalTime time = LocalTime.parse(schedule.split("T")[1]);
+			Cinema existingCinema = cinemaService.findById(Long.parseLong(cinema));
+			MovieScreening movieScreening = new MovieScreening(movieScreeningId++, movie, existingCinema, date, time);
+			movieScreeningService.insertNewMovieScreening(movieScreening);
+		} catch(ScreeningScheduleOverlapException e) {
+			model.addAttribute("errorMessage", e.getMessage());
+		}
+		
+		return "admin/newMovieAndNewMovieScreening";
 	}
 }
