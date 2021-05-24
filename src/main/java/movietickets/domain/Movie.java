@@ -39,6 +39,18 @@ public class Movie {
 		this.id = id;
 	}
 	
+	public Movie(Long id, String title, String summary, String director, String actors,
+			int runningTime, String posterLink, String trailerLink) {
+		this.id = id;
+		this.title = title;
+		this.summary = summary;
+		this.directors = director;
+		this.actors = actors;
+		this.runningTime = runningTime;
+		this.posterLink = posterLink;
+		this.trailerLink = trailerLink;
+	}
+	
 	public Movie(String title, String summary, String director, String actors,
 			int runningTime, String posterLink) {
 		this.title = title;

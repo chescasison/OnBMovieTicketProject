@@ -37,6 +37,15 @@ public class MovieScreening {
 	
 	@OneToMany(orphanRemoval = true, targetEntity=ReservedSeat.class, mappedBy = "movieScreening", fetch=FetchType.EAGER)
 	private Collection<ReservedSeat> reservedSeats;
+	
+	public MovieScreening(Long id, Movie movie, Cinema cinema, LocalDate scheduleDate, LocalTime scheduleTime) {
+		this.id = id;
+		this.movie = movie;
+		this.cinema = cinema;
+		this.scheduleDate = scheduleDate;
+		this.scheduleTime = scheduleTime;
+		this.reservedSeats = new HashSet<>();
+	}
 
 	public MovieScreening(Movie movie, Cinema cinema, LocalDate scheduleDate, LocalTime scheduleTime) {
 		this.movie = movie;
