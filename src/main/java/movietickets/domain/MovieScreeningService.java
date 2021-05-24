@@ -1,9 +1,19 @@
 package movietickets.domain;
 
-import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MovieScreeningService {
@@ -12,7 +22,13 @@ public class MovieScreeningService {
 	private MovieScreeningRepository movieScreeningRepository;
 	
 	@Autowired
+	private MovieService movieService;
+	
+	@Autowired
 	private ReservedSeatService reservedSeatService;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 	
 	/*
 	public List<MovieScreening> findAll() {
@@ -54,8 +70,33 @@ public class MovieScreeningService {
 	}
 	
 	public List<ReservedSeat> getReservedSeatsOfMovieScreening(Long movieScreeningId){
-		List<ReservedSeat> reservedSeats = reservedSeatService.findByMovieScreening(new MovieScreening(3L));
+		List<ReservedSeat> reservedSeats = reservedSeatService.findByMovieScreening(new MovieScreening(movieScreeningId));
 		return reservedSeats;
 	}
 	
+	public List<MovieScreening> findByCinemaAndSchedule(Cinema cinema, LocalDate date, LocalTime time){
+		List<MovieScreening> movieScreenings = movieScreeningRepository.findByCinemaAndSchedule(cinema, date, time);
+		return movieScreenings;
+	}
+	
+	@Transactional
+	public void insertNewMovieScreening(MovieScreening movieScreening) {
+		Cinema cinema = movieScreening.getCinema();
+		LocalDate date = movieScreening.getScheduleDate();
+		LocalTime time = movieScreening.getScheduleTime();
+		if(hasOverlap(cinema, date, time)) {
+			throw new ScreeningScheduleOverlapException("Cinema " + cinema.getId() + " is already reserved on " + date + " at " + time);
+		}
+		movieService.addMovie(movieScreening.getMovie());
+		System.out.println("Successful persist movie: " + movieScreening.getMovie());
+		this.entityManager.persist(movieScreening);
+		System.out.println("Successful persist movie screening: " + movieScreening);
+	}
+	
+	public boolean hasOverlap(Cinema cinema, LocalDate date, LocalTime time) {
+		if(findByCinemaAndSchedule(cinema, date, time).size() > 0) {
+			return true;
+		} 
+		return false;
+	}
 }
