@@ -32,7 +32,6 @@ public class ReservedSeatService {
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Transactional
 	public void insertReserveSeat(ReservedSeat reservedSeat) {
-		//reservedSeatRepository.save(reservedSeat);
 		
 		if (seatAlreadyReserved(reservedSeat.getRow().charAt(0), reservedSeat.getColumn())) {
 			throw new SeatAlreadyReservedException("Seat " + reservedSeat.getRow() + reservedSeat.getColumn() + " is already reserved.");
