@@ -99,4 +99,8 @@ public class MovieScreeningService {
 		} 
 		return false;
 	}
+	
+	public MovieScreening findLastInserted() {
+		return movieScreeningRepository.findLastInserted().get();
+	}
 }

@@ -33,16 +33,16 @@ public class ReservedSeatService {
 	@Transactional
 	public void insertReserveSeat(ReservedSeat reservedSeat) {
 		
-		if (seatAlreadyReserved(reservedSeat.getRow().charAt(0), reservedSeat.getColumn())) {
+		if (seatAlreadyReserved(reservedSeat.getRow().charAt(0), reservedSeat.getColumn(), reservedSeat.getMovieScreening())) {
 			throw new SeatAlreadyReservedException("Seat " + reservedSeat.getRow() + reservedSeat.getColumn() + " is already reserved.");
 		}
 		
 		this.entityManager.persist(reservedSeat);
-		
+		System.out.println(reservedSeat);
 	}
 	
-	public boolean seatAlreadyReserved(Character row, int column) {
-		List<ReservedSeat> seat = reservedSeatRepository.findByRowAndColumn(String.valueOf(row), column);
+	public boolean seatAlreadyReserved(Character row, int column, MovieScreening movieScreening) {
+		List<ReservedSeat> seat = reservedSeatRepository.findByRowAndColumn(String.valueOf(row), column, movieScreening);
 		
 		return seat.size() != 0;
 	}

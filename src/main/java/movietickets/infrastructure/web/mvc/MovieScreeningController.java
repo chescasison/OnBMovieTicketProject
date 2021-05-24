@@ -110,18 +110,18 @@ public class MovieScreeningController {
 		}
 		
 	}
-
-	void isSeatAvailable(String[] seatNumbers) {
-		for (String seatNumber : seatNumbers) {
-			Character row = seatNumber.charAt(0);
-			String column = seatNumber.substring(1);
-
-			if (reservedSeatService.seatAlreadyReserved(row, Integer.parseInt(column))) {
-				throw new SeatAlreadyReservedException("Seat " + row + column + " is already reserved.");
-			}
-		}
-
- 	}
+//
+//	void isSeatAvailable(String[] seatNumbers) {
+//		for (String seatNumber : seatNumbers) {
+//			Character row = seatNumber.charAt(0);
+//			String column = seatNumber.substring(1);
+//
+//			if (reservedSeatService.seatAlreadyReserved(row, Integer.parseInt(column))) {
+//				throw new SeatAlreadyReservedException("Seat " + row + column + " is already reserved.");
+//			}
+//		}
+//
+// 	}
 	
 	@PreAuthorize("hasRole('SERVICE_REP')")
 	@RequestMapping(value="/confirmAndReserve/{screeningId}")
@@ -129,12 +129,11 @@ public class MovieScreeningController {
 		try {
 			String[] seatNums = seatNumbers.substring(1, seatNumbers.length() - 1).split(", ");
 			//isSeatAvailable(seatNums);
-			Long id = 22L;
 			for(String seat: seatNums) {
 				MovieScreening movieScreening = new MovieScreening(screeningId);
 				String row = String.valueOf(seat.charAt(0));
 				int column = Integer.parseInt(seat.substring(1));
-				ReservedSeat reservedSeat = new ReservedSeat(id++, movieScreening, row, column);
+				ReservedSeat reservedSeat = new ReservedSeat(movieScreening, row, column);
 				reservedSeatService.insertReserveSeat(reservedSeat);
 				
 				Ticket ticket = new Ticket(movieScreening, row, column);

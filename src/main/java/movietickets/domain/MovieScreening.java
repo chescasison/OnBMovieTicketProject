@@ -114,6 +114,22 @@ public class MovieScreening {
 //		return this.movie + " in " + this.cinema + " at " + this.schedule.format(formatter);
 //	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MovieScreening other = (MovieScreening) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
 	
 	
 }

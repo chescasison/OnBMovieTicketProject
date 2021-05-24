@@ -23,6 +23,10 @@ public class MovieService {
 		return movie.get();
 	}
 	
+	public Movie findLastInserted() {
+		return movieRepository.findLastInserted().get();
+	}
+	
 	@Transactional
 	public void addMovie(Movie movie) {
 		this.entityManager.persist(movie);

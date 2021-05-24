@@ -17,6 +17,6 @@ public interface ReservedSeatRepository extends CrudRepository<ReservedSeat, Lon
 	List<ReservedSeat> findByMovieScreening(MovieScreening movieScreening);
 	
 	@Lock(LockModeType.PESSIMISTIC_READ)
-	@Query("FROM ReservedSeat r WHERE r.row = ?1 AND r.column = ?2")
-	List<ReservedSeat> findByRowAndColumn(String row, int column);
+	@Query("FROM ReservedSeat r WHERE r.row = ?1 AND r.column = ?2 and r.movieScreening = ?3")
+	List<ReservedSeat> findByRowAndColumn(String row, int column, MovieScreening movieScreening);
 }

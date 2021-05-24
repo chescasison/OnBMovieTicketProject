@@ -1,9 +1,14 @@
 package movietickets.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="cinema_seats")
 public class CinemaSeats {
 	
 	@Id
@@ -15,6 +20,9 @@ public class CinemaSeats {
 	
 	private String row;
 	private int column;
+	
+	@Column(name = "status")
+	private String status;
 	
 	protected CinemaSeats() {
 		
@@ -34,6 +42,10 @@ public class CinemaSeats {
 
 	public int getColumn() {
 		return column;
+	}
+	
+	public String getStatus() {
+		return status;
 	}
 
 	@Override

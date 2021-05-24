@@ -11,6 +11,8 @@ import javax.validation.constraints.NotEmpty;
 @Table(name="reserved_seats")
 public class ReservedSeat {
 	
+	private static Long idCounter = 22L;
+	
 	@Id
 	private Long id;
 	
@@ -27,6 +29,7 @@ public class ReservedSeat {
 	}
 	
 	public ReservedSeat(MovieScreening movieScreening, String row, int column) {
+		id = idCounter++;
 		this.movieScreening = movieScreening;
 		this.row = row;
 		this.column = column;
@@ -87,7 +90,7 @@ public class ReservedSeat {
 
 	@Override
 	public String toString() {
-		return "ReservedSeat [movieScreening=" + movieScreening + ", row=" + row + ", column=" + column + "]";
+		return "ReservedSeat [id=" + id + ", movieScreening=" + movieScreening + ", row=" + row + ", column=" + column + "]";
 	}
 	
 	

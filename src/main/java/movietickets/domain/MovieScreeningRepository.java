@@ -27,4 +27,7 @@ public interface MovieScreeningRepository extends CrudRepository<MovieScreening,
 	@Query("FROM MovieScreening m WHERE m.cinema = ?1 AND m.scheduleDate = ?2 AND m.scheduleTime = ?3")
 	List<MovieScreening> findByCinemaAndSchedule(Cinema cinema, LocalDate date, LocalTime time);
 	
+	@Query("FROM MovieScreening m where m.id = (Select max(id) from MovieScreening)")
+	Optional<MovieScreening> findLastInserted();
+	
 }
