@@ -1,5 +1,7 @@
 package movietickets.domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,5 +23,8 @@ public interface MovieScreeningRepository extends CrudRepository<MovieScreening,
 	
 	@Query("SELECT DISTINCT movie FROM MovieScreening m WHERE m.scheduleDate = CURRENT_DATE")
 	List<Movie> findMovieByScheduledToday();
+	
+	@Query("FROM MovieScreening m WHERE m.cinema = ?1 AND m.scheduleDate = ?2 AND m.scheduleTime = ?3")
+	List<MovieScreening> findByCinemaAndSchedule(Cinema cinema, LocalDate date, LocalTime time);
 	
 }
