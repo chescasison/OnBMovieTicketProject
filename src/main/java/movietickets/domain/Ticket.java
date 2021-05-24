@@ -9,44 +9,31 @@ public class Ticket {
 	
 	@Id 
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "ticker_number")
+	@Column(name = "ticket_number")
 	private Long ticketNumber;
-	
-	@OneToOne
-	@JoinColumn(name = "customer_id")
-	@NotNull
-	private Customer customer;
 	
 	@ManyToOne
 	@NotNull
+	@JoinColumn(name = "movie_screening_id")
 	private MovieScreening movieScreening;
 	
-	@OneToOne
-	@NotNull
-	private Seat seat;
+	private String row;
+	private int column;
 	
-	public Ticket(Customer customer, MovieScreening movieScreening, Seat seat) {
-		this.customer = customer;
+	public Ticket(MovieScreening movieScreening, String row, int column) {
 		this.movieScreening = movieScreening;
-		this.seat = seat;
+		this.row = row;
+		this.column = column;
 	}
 
 	public Long getTicketNumber() {
 		return ticketNumber;
 	}
 
-	public Customer getCustomer() {
-		return customer;
-	}
-
 	public MovieScreening getMovieScreening() {
 		return movieScreening;
 	}
 
-	public Seat getSeat() {
-		return seat;
-	}
-	
 	protected Ticket() {
 		// required by persistence layer
 	}
@@ -77,6 +64,13 @@ public class Ticket {
 			if (other.ticketNumber != null)
 				return false;
 		} else if (!ticketNumber.equals(other.ticketNumber))
+			return false;
+		if (row == null) {
+			if (other.row != null)
+				return false;
+		} else if(!row.equals(other.row))
+			return false;
+		if (column != other.column)
 			return false;
 		return true;
 	}
