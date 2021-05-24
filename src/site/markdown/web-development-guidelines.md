@@ -387,7 +387,6 @@ nav.last=
 # Navigation (on all pages)
 nav.home=
 nav.about=
-nav.contact=
 nav.login=
 nav.logout=
 

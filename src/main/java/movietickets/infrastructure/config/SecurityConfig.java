@@ -23,10 +23,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-        		.mvcMatchers("/**").authenticated()
+        	.mvcMatchers("/**")
+        		.permitAll()
+        	.mvcMatchers("/admin/**")
+        		.hasRole("SYSTEM_AD")
+        	.anyRequest()
+        		.authenticated()
 				.and()
 			.httpBasic()
 				.and()
+			.formLogin()
+				.permitAll()     
+        		.and()
+        	.logout()
+        		.and()
 			.csrf().disable();
 	}
 
@@ -38,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and().withUser("service_rep")
 				.password(passwordEncoder().encode("password")).roles("CUSTOMER", "SERVICE_REP")
 			.and().withUser("system_ad")
-				.password(passwordEncoder().encode("password")).roles("CUSTOMER", "SERVICE_REP", "SYSTEM_AD");
+				.password(passwordEncoder().encode("password")).roles("CUSTOMER", "SYSTEM_AD");
 		;
 	}
 
