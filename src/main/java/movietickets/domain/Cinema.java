@@ -11,15 +11,13 @@ public class Cinema {
 	private Long id;
 	
 	@Column(name = "max_row")
-	private String maxRow;
+	private int maxRow;
 	@Column(name = "max_column")
 	private int maxColumn;
 	
-	public Cinema(Long id, String maxRow, int maxColumn) {
+	public Cinema(Long id, int maxRow, int maxColumn) {
 		this.id = id;
-		isAlpha(maxRow); isNotBlank(maxRow);
-		this.maxRow = upperCase(maxRow);
-		if (maxColumn <= 0) {
+		if (maxRow <= 0 || maxColumn <= 0) {
 			throw new IllegalArgumentException("max column must be positive, was: " + maxColumn);
 		}
 		this.maxColumn = maxColumn;
@@ -29,7 +27,7 @@ public class Cinema {
 		return id;
 	}
 
-	public String getMaxRow() {
+	public int getMaxRow() {
 		return maxRow;
 	}
 	
@@ -37,8 +35,8 @@ public class Cinema {
 		return maxColumn;
 	}
 	
-	public boolean isValid (String row, int column) {
-		return (row.length() < maxRow.length() || row.compareTo(maxRow) <= 0) 
+	public boolean isValid (int row, int column) {
+		return (row > 0 && row <= maxRow) 
 				&& (column > 0 && column <= maxColumn);
 	}
 	

@@ -152,71 +152,41 @@ tr.title{
 										</td>
 									</tr>
 								<%
-									int rows = 19; 
-									int cols = 20; 
-								   
-									List<List<Integer>> a = new ArrayList<List<Integer>>();
-									a.add(Arrays.asList(0,1,2,4,15,17,18,19)); // index 0 row A
-									a.add(Arrays.asList(0,1,4,15,18,19)); // index 1 row B
-									a.add(Arrays.asList(0,4,15,19)); // index 2 row C
-									a.add(Arrays.asList(4,15)); // index 3 row D
-									a.add(Arrays.asList(4,15)); // index 4 row E
-									a.add(Arrays.asList(4,15)); // index 4 row F
-									a.add(Arrays.asList(4,15)); // index 4 row G
-									a.add(Arrays.asList(4,15)); // index 4 row H
-									a.add(Arrays.asList(4,15)); // index 4 row I
-									a.add(Arrays.asList(4,15)); // index 4 row J
-									a.add(new ArrayList<>());
-									a.add(Arrays.asList(4,15)); // index 4 row K
-									a.add(Arrays.asList(4,15)); // index 4 row L
-									a.add(Arrays.asList(4,15)); // index 4 row M
-									a.add(Arrays.asList(4,15)); // index 4 row N
-									a.add(Arrays.asList(4,5,6,7,8,9,10,11,12,13,14,15)); // index 4 row O
-									a.add(Arrays.asList(4,15));// index 4 row P
-									a.add(Arrays.asList(4,15)); // index 4 row Q
-									a.add(Arrays.asList(4,15)); // index 4 row R
-									a.add(Arrays.asList(4,15)); // index 4 row S
 									
-									Map<Integer, Character> rowLetters = new HashMap<>();
-									char ch = 'A';
-									for (Integer i=0; i < 19; i++){
-										rowLetters.put(i, ch);
-										ch += 1;
-									}
+									Cinema cinema = (Cinema) request.getAttribute("cinema");
+									int maxRow = cinema.getMaxRow(); 
+									int maxColumn = cinema.getMaxColumn(); 
+								 						
+									HashSet<Seat> reservedSeats = (HashSet<Seat>) request.getAttribute("reservedSeats");
+									List<Seat> allSeats = (List<Seat>) request.getAttribute("allSeats");
 									
-									List<ReservedSeat> reservedSeats = (List<ReservedSeat>) request.getAttribute("reservedSeats");
-									Long movieScreeningId = (Long) request.getAttribute("movieScreeningId");
-									
-									Character rowLetter;
-									String seatNumber;
-									for (int i=0; i < rows; i++){
+									for (int i=1; i <= maxRow; i++){
 										%>
 										<tr>
 										<%
-										for (Integer j=0; j < cols; j++) {
-												if (a.get(i).contains(j) || a.get(i).isEmpty()) { 
+										for (int j=1; j <= maxColumn; j++) {
+												Seat seat = new Seat(i,j,cinema);	
+												if (!allSeats.contains(seat)) { 
 												%>
 													<td>
 														<input type="checkbox" name="seat" value="-" style="border: 1px solid black; height: 3vh; width: 4vh; margin: 0%;" disabled/>
 														<label style="color:white;">OO</label>
 													</td>
-												<% } else { 
-													rowLetter = rowLetters.get(i);
-													Integer num = j + 1;
-													seatNumber = rowLetter + num.toString();
-													
-													if (reservedSeats.contains(new ReservedSeat(new MovieScreening(movieScreeningId), String.valueOf(rowLetter), num))) {
+												<% } else { 	
+													String seatName = seat.toString();	
+													if (reservedSeats.contains(seat)) {
 														%>
+														
 														<td class="seat" style="background-color: red; color: white;">
-															<input type="checkbox" id="<%= seatNumber %>" name="seat"   value="<%= seatNumber %>" style="border: 1px solid black; height: 3vh; width: 4vh; margin: 0%;" disabled/>
-															<label for="<%= seatNumber %>"><%= seatNumber %></label>
+															<input type="checkbox" id="<%= seatName %>" name="seat"   value="<%= seatName %>" style="border: 1px solid black; height: 3vh; width: 4vh; margin: 0%;" disabled/>
+															<label for="<%= seatName %>"><%= seatName %></label>
 														</td>
 														<%
 													} else {
 														%>
 														<td class="seat">
-															<input type="checkbox" id="<%= seatNumber %>" name="seat"   value="<%= seatNumber %>" style="border: 1px solid black; height: 3vh; width: 4vh; margin: 0%;"/>
-															<label for="<%= seatNumber %>"><%= seatNumber %></label>
+															<input type="checkbox" id="<%= seatName %>" name="seat"   value="<%= seatName %>" style="border: 1px solid black; height: 3vh; width: 4vh; margin: 0%;"/>
+															<label for="<%= seatName %>"><%= seatName %></label>
 														</td>
 														<%
 													}

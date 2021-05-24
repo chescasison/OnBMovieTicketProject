@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -35,8 +36,8 @@ public class MovieScreening {
 	@Column(name = "schedule_time")
 	private LocalTime scheduleTime;
 	
-	@OneToMany(orphanRemoval = true, targetEntity=ReservedSeat.class, mappedBy = "movieScreening", fetch=FetchType.EAGER)
-	private Collection<ReservedSeat> reservedSeats;
+	@OneToMany(cascade = CascadeType.ALL)
+	private Collection<Seat> reservedSeats;
 
 	public MovieScreening(Movie movie, Cinema cinema, LocalDate scheduleDate, LocalTime scheduleTime) {
 		this.movie = movie;
@@ -70,17 +71,17 @@ public class MovieScreening {
 		return scheduleTime;
 	}
 	
-//	public void reserveSeat(Seat seat) {
-//		if (!seat.getCinema().equals(cinema)) {
-//			throw new IllegalArgumentException("seat " + seat + "is not in cinema "+ cinema);
-//		}
-//		if (reservedSeats.contains(seat)) {
-//			throw new SeatAlreadyReservedException("seat " + seat + "is already reserved");
-//		}
-//		else {
-//			reservedSeats.add(seat);
-//		}
-//	}
+	public void reserveSeat(Seat seat) {
+		if (!seat.getCinema().equals(cinema)) {
+			throw new IllegalArgumentException("seat " + seat + "is not in cinema "+ cinema);
+		}
+		if (reservedSeats.contains(seat)) {
+			throw new SeatAlreadyReservedException("seat " + seat + "is already reserved");
+		}
+		else {
+			reservedSeats.add(seat);
+		}
+	}
 	
 	public void unreserveSeat(Seat seat) {
 		if (!reservedSeats.contains(seat)) {
@@ -91,8 +92,8 @@ public class MovieScreening {
 		}
 	}
 	
-	public Collection<ReservedSeat> getReservedSeats() {
-		return reservedSeats;
+	public Collection<Seat> getReservedSeats() {
+		return new HashSet<>();
 	}
 
 	protected MovieScreening() {

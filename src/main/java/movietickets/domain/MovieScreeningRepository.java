@@ -3,13 +3,16 @@ package movietickets.domain;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.LockModeType;
+
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 public interface MovieScreeningRepository extends CrudRepository<MovieScreening, Long> {
 
 	
-	Optional<MovieScreening> findById(Long id);
+	Optional<MovieScreening> findById(Long movieScreeningId);
 	
 	@Query("FROM MovieScreening m WHERE m.scheduleDate = CURRENT_DATE AND m.movie = ?1")
 	List<MovieScreening> findByMovieAndScheduledToday(Movie movie);

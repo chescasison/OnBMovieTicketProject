@@ -15,30 +15,43 @@ import javax.validation.constraints.*;
 public class Seat {
 	
 	@Id 
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotEmpty
-	private String row;
+	private int row;
 	
 	private int column;
 	
-	public Seat(String row, int column, Cinema cinema) {
-		row = upperCase(row);
+	@ManyToOne
+	@JoinColumn(name = "cinema_id")
+	private Cinema cinema;
+	
+	public Seat(int row, int column, Cinema cinema) {
 		if (!cinema.isValid(row, column)) {
 			throw new IllegalArgumentException("seat is outside limits of cinema" + "(max row: "
 											+ cinema.getMaxRow() + ", max column: " + cinema.getMaxColumn()
-											+ "), was: " + row + column);
+											+ "), was: " + str(row) + column);
 		}
 		this.row = row;
 		this.column = column;
+		this.cinema = cinema;
 	}
 	
-	public String getRow() {
+	private static String str(int i) {
+	    return i < 0 ? "" : str((i / 26) - 1) + (char)(64 + i % 26);
+	}
+	
+	
+	public int getRow() {
 		return row;
 	}
 	
 	public int getColumn() {
 		return column;
+	}
+	
+	public Cinema getCinema() {
+		return cinema;
 	}
 	
 	protected Seat() {
@@ -47,15 +60,16 @@ public class Seat {
 	
 	@Override
 	public String toString() {
-		return this.row + this.column;
+		return upperCase(str(this.row)) + this.column;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((cinema == null) ? 0 : cinema.hashCode());
 		result = prime * result + column;
-		result = prime * result + ((row == null) ? 0 : row.hashCode());
+		result = prime * result + row;
 		return result;
 	}
 
@@ -68,12 +82,14 @@ public class Seat {
 		if (getClass() != obj.getClass())
 			return false;
 		Seat other = (Seat) obj;
+		if (cinema == null) {
+			if (other.cinema != null)
+				return false;
+		} else if (!cinema.equals(other.cinema))
+			return false;
 		if (column != other.column)
 			return false;
-		if (row == null) {
-			if (other.row != null)
-				return false;
-		} else if (!row.equals(other.row))
+		if (row != other.row)
 			return false;
 		return true;
 	}
